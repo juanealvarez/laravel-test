@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    image: php:8.2-fpm
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8000:8000"
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    networks:
+      - laravel-network
+
+  # EasyMoney Payment Server
+  easymoney:
+    build:
+      context: ./PAY-SERVERS
+      dockerfile: Dockerfile.node
+    container_name: easymoney_server
+    restart: unless-stopped
+    volumes:
+      - ./PAY-SERVERS:/app
+    ports:
+      - "3000:3000"
+    command: node easy-money.js
+    networks:
+      - laravel-network
+
+  # SuperWalletz Payment Server
+  superwalletz:
+    build:
+      context: ./PAY-SERVERS
+      dockerfile: Dockerfile.node
+    container_name: superwalletz_server
+    restart: unless-stopped
+    volumes:
+      - ./PAY-SERVERS:/app
+    ports:
+      - "3003:3003"
+    command: node super-walletz.js
+    networks:
+      - laravel-network
+
+# Networks
+networks:
+  laravel-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  mysql-data:
+    driver: local
+

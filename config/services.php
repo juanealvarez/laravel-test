@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'payment_providers' => [
+        'easymoney' => [
+            'url' => env('EASYMONEY_URL', 'http://localhost:3000'),
+        ],
+        'superwalletz' => [
+            'url' => env('SUPERWALLETZ_URL', 'http://localhost:3003'),
+        ],
+    ],
 ];
